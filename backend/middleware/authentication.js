@@ -20,7 +20,7 @@ const authenticatedUser = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return res.status(401).json("Authentication invalid");
+    return res.status(401).json({ message: "Authentication invalid" });
   }
 };
 
