@@ -7,6 +7,7 @@ const {
   deleteProduct,
   addProduct,
   getProductUsers,
+  getProduct,
 } = require("../controllers/productsController");
 const {
   authenticatedUser,
@@ -23,6 +24,7 @@ router.route("/:id/users").get(authenticatedUser, getProductUsers);
 
 router
   .route("/:id")
+  .get([authenticatedUser, authorizePermissions("admin")], getProduct)
   .patch([authenticatedUser, authorizePermissions("admin")], editProduct)
   .delete([authenticatedUser, authorizePermissions("admin")], deleteProduct);
 

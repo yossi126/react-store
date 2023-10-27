@@ -1,40 +1,51 @@
 import { redirect } from "react-router-dom";
 
-// export function getTokenDuration() {
-//   const storedExpirationDate = localStorage.getItem("expiration");
-//   const expirationDate = new Date(storedExpirationDate);
-//   const now = new Date();
-//   const duration = expirationDate.getTime() - now.getTime();
-//   return duration;
-// }
+export function getTokenDuration() {
+  // if no expiration return -1 (expired)
+  const storedExpirationDate = localStorage.getItem("expiration");
+  if (!storedExpirationDate) {
+    return -1;
+  } else {
+    const expirationDate = new Date(storedExpirationDate);
+    const now = new Date();
+    const duration = expirationDate.getTime() - now.getTime();
+    return duration;
+  }
+}
 
-// export function getAuthToken() {
-//   const token = localStorage.getItem("token");
+export function getAuthToken() {
+  const token = localStorage.getItem("token");
 
-//   if (!token) {
-//     return null;
-//   }
+  if (!token) {
+    return null;
+  }
 
-//   const tokenDuration = getTokenDuration();
+  const tokenDuration = getTokenDuration();
 
-//   if (tokenDuration < 0) {
-//     return "EXPIRED";
-//   }
+  if (tokenDuration < 0) {
+    return "EXPIRED";
+  }
 
-//   return token;
-// }
+  return token;
+}
 
 export function tokenLoader() {
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
+
   return token;
 }
 
 export function checkAuthLoader() {
-  //const token = getAuthToken();
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
 
   if (!token) {
-    return redirect("/");
+    return redirect("/auth?mode=login");
+  }
+
+  if (token === "EXPIRED") {
+    alert("Your session has expired. Please login again.");
+    localStorage.clear();
+    return redirect("/auth?mode=login");
   }
 
   return null;

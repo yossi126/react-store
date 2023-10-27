@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { addToCart, setIsLoading, load } from "../features/cartSilce";
 import { useDispatch } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, redirect } from "react-router-dom";
 import { apiUrl } from "../env";
+import axios from "axios";
+import { checkAuthLoader } from "../util/auth";
 
 function Products() {
   const { products, amount, cart, isLoading } = useSelector(
@@ -16,17 +18,12 @@ function Products() {
     dispatch(setIsLoading(true));
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`${apiUrl}/products`, {
+      const response = await axios.get(`${apiUrl}/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
-      if (!response.ok) {
-        dispatch(setIsLoading(false));
-        throw new Error(`${data.message}: ${response.status}`);
-      }
-
+      const data = response.data;
       dispatch(load(data));
       dispatch(setIsLoading(false));
     } catch (error) {
@@ -53,55 +50,52 @@ function Products() {
   return (
     <>
       <h3>products page</h3>
-      {products.map((product) => {
-        const isProductInCart = cart.some((item) => item._id === product._id);
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
+        {products.map((product) => {
+          const isProductInCart = cart.some((item) => item._id === product._id);
 
-        return (
-          <article
-            key={product._id}
-            style={{
-              border: "1px solid black",
-              padding: "10px",
-              borderRadius: "5px",
-              margin: "10px",
-              width: "200px",
-            }}
-          >
-            <h4>{product.name}</h4>
-            <Link to={`${product._id}`}>Edit</Link>
-            <h5>{product.price}</h5>
-            <div
+          return (
+            <article
+              key={product._id}
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                border: "1px solid black",
+                padding: "10px",
+                borderRadius: "5px",
+                margin: "10px",
+                width: "200px",
               }}
             >
-              <button
-                disabled={isProductInCart}
-                onClick={() => {
-                  dispatch(addToCart(product));
+              <h4>{product.name}</h4>
+              <Link to={`${product._id}`}>Edit</Link>
+              <h5>{product.price}</h5>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                {isProductInCart ? "In cart" : "Add"}
-              </button>
-            </div>
-          </article>
-        );
-      })}
+                <button
+                  disabled={isProductInCart}
+                  onClick={() => {
+                    dispatch(addToCart(product));
+                  }}
+                >
+                  {isProductInCart ? "In cart" : "Add"}
+                </button>
+              </div>
+              <Link to={`${product._id}/users`}>Product buyers</Link>
+            </article>
+          );
+        })}
+      </div>
       <Outlet />
     </>
   );
 }
 
 export const loader = async () => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    return redirect("/auth");
-  }
-
-  return null;
+  return checkAuthLoader();
 };
 
 export default Products;

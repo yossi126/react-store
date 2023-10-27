@@ -115,7 +115,7 @@ export async function action({ request }) {
     const resData = await response.json();
     const token = resData.token;
     const expiration = new Date();
-    expiration.setHours(expiration.getHours() + 1);
+    expiration.setMinutes(expiration.getMinutes() + 30); // Set the expiration time to 20 minutes
 
     localStorage.setItem("token", token);
     localStorage.setItem("role", resData.user.role);
@@ -124,8 +124,8 @@ export async function action({ request }) {
     return redirect("/");
   } catch (error) {
     console.log("Error occurred:", error.message);
+    return error.message;
   }
-  return null;
 }
 
 export default Auth;

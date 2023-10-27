@@ -10,13 +10,7 @@ const Home = () => {
 };
 
 export const loader = async () => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    return redirect("/auth");
-  }
-
-  return null;
+  return checkAuthLoader();
 };
 
 export default Home;
