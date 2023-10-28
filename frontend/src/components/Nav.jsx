@@ -50,7 +50,7 @@ const Nav = () => {
                   to="/costumer"
                   style={{ fontSize: "20px", color: "white" }}
                 >
-                  costumer
+                  Costumer
                 </NavLink>
               </li>
               <li style={{ margin: "0 10px" }}>
@@ -58,7 +58,7 @@ const Nav = () => {
                   to="/purchased"
                   style={{ fontSize: "20px", color: "white" }}
                 >
-                  purchased
+                  Purchased
                 </NavLink>
               </li>
             </div>

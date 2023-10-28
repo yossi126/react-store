@@ -8,12 +8,16 @@ const initialState = {
   isLoading: true,
 };
 
+//TODO: remove boilerplate code
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     clearCart: (state) => {
       state.cart = [];
+      state.amount = 0;
+      state.total = 0;
     },
     removeItem: (state, action) => {
       const itemId = action.payload;
@@ -32,11 +36,11 @@ const cartSlice = createSlice({
     calculateTotals: (state) => {
       let amount = 0;
       let total = 0;
-      state.cartItems.forEach((item) => {
-        amount += item.amount;
-        total += item.amount * item.price;
+      state.cart.forEach((item) => {
+        //amount += item.amount;
+        total += item.price;
       });
-      state.amount = amount;
+      // state.amount = amount;
       state.total = total;
     },
     load: (state, payload) => {
@@ -44,6 +48,8 @@ const cartSlice = createSlice({
     },
     addToCart: (state, action) => {
       state.cart.push(action.payload);
+      state.amount = state.amount + 1;
+      state.total += action.payload.price;
     },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;

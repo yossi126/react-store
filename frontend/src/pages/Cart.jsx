@@ -1,11 +1,53 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../features/cartSilce";
+import axios from "axios";
+import { apiUrl } from "../env";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { products, amount, cart } = useSelector((store) => store.cart);
+  const { cart, total } = useSelector((store) => store.cart);
   const dispatch = useDispatch();
-  //console.log(cart);
+  const navigate = useNavigate();
+
+  const handleCheckout = async () => {
+    // get the ids of the products in the cart
+    const ids = cart.map((item) => item._id);
+
+    // create the new order object
+    const newOrder = { products: ids, totalPrice: total };
+    //console.log(newOrder);
+    try {
+      const newOrderResponse = await axios.post(`${apiUrl}/orders`, newOrder, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const orderId = newOrderResponse.data.orderId;
+
+      // create purchase
+
+      const newPurchaseResponse = await axios.post(
+        `${apiUrl}/purchase`,
+        { order: orderId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      alert(newPurchaseResponse.data.message);
+      dispatch(clearCart());
+      navigate(-1);
+
+      // console.log(newPurchaseResponse.data.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -33,12 +75,13 @@ const Cart = () => {
           );
         })}
       </div>
+      <button onClick={handleCheckout}>Checkout</button>
       <button
         onClick={() => {
           dispatch(clearCart());
         }}
       >
-        Checkout
+        Clear Cart
       </button>
     </>
   );

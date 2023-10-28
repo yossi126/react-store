@@ -19,7 +19,6 @@ import ProductsRootLayout from "./pages/ProductsRootLayout";
 import ProductUsers from "./components/ProductUsers";
 import OrderDetail, { loader as orderDetailLoader } from "./pages/OrderDetail";
 
-//TODO: add LOADER to all pages
 const router = createBrowserRouter([
   {
     path: "/",
@@ -50,15 +49,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // { path: "products", element: <Products />, loader: productsLoader },
-      // {
-      //   path: "products/:productId",
-      //   element: <EditProduct />,
-      //   loader: editProductLoader,
-      //   action: productFormAction,
-      // },
-      // { path: "costumer", element: <Costumer /> },
-      // { path: "costumer/:costumerId", element: <EditCostumerForm /> },
       {
         path: "costumer",
         loader: checkAuthLoader,
@@ -84,7 +74,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // { path: "purchased", element: <Purchased /> },
       { path: "logout", action: logoutAction },
     ],
   },
