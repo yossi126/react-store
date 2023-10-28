@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { addToCart, setIsLoading, load } from "../features/cartSilce";
 import { useDispatch } from "react-redux";
-import { Outlet, redirect } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { apiUrl } from "../env";
 import axios from "axios";
 import { checkAuthLoader } from "../util/auth";

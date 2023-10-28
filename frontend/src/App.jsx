@@ -5,15 +5,19 @@ import Cart from "./pages/Cart";
 import Products, { loader as productsLoader } from "./pages/Products";
 import { action as productFormAction } from "./components/ProductForm";
 import EditProduct, { loader as editProductLoader } from "./pages/EditProduct";
-import Costumer from "./pages/Costumer";
-import Purchased from "./pages/Purchased";
-import EditCostumerForm from "./components/EditCostumerForm";
+import Costumer, { loader as costumerLoader } from "./pages/Costumer";
+import Purchased, { loader as purchaseLoader } from "./pages/Purchased";
+import CostumerForm, {
+  loader as costumerFormLoader,
+  action as costumerFormAction,
+} from "./components/CostumerForm";
 import Auth, { action as authAction } from "./pages/Auth";
-import { tokenLoader } from "./util/auth";
+import { tokenLoader, checkAuthLoader } from "./util/auth";
 import { action as logoutAction } from "./pages/Logout";
 import ErrorPage from "./pages/ErrorPage";
 import ProductsRootLayout from "./pages/ProductsRootLayout";
 import ProductUsers from "./components/ProductUsers";
+import OrderDetail, { loader as orderDetailLoader } from "./pages/OrderDetail";
 
 //TODO: add LOADER to all pages
 const router = createBrowserRouter([
@@ -53,9 +57,34 @@ const router = createBrowserRouter([
       //   loader: editProductLoader,
       //   action: productFormAction,
       // },
-      { path: "costumer", element: <Costumer /> },
-      { path: "costumer/:costumerId", element: <EditCostumerForm /> },
-      { path: "purchased", element: <Purchased /> },
+      // { path: "costumer", element: <Costumer /> },
+      // { path: "costumer/:costumerId", element: <EditCostumerForm /> },
+      {
+        path: "costumer",
+        loader: checkAuthLoader,
+        children: [
+          { index: true, element: <Costumer />, loader: costumerLoader },
+          {
+            path: ":costumerId",
+            element: <CostumerForm />,
+            loader: costumerFormLoader,
+            action: costumerFormAction,
+          },
+        ],
+      },
+      {
+        path: "purchased",
+        loader: checkAuthLoader,
+        children: [
+          { index: true, element: <Purchased />, loader: purchaseLoader },
+          {
+            path: ":orderId",
+            element: <OrderDetail />,
+            loader: orderDetailLoader,
+          },
+        ],
+      },
+      // { path: "purchased", element: <Purchased /> },
       { path: "logout", action: logoutAction },
     ],
   },

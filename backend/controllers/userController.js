@@ -1,5 +1,15 @@
 const User = require("../models/user");
 
+const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(400).json({ msg: "User not found" });
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
+};
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({});
@@ -36,4 +46,5 @@ module.exports = {
   getAllUsers,
   editUser,
   deleteUser,
+  getUser,
 };

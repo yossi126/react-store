@@ -22,7 +22,13 @@ const createPurchase = async (req, res) => {
 const getPurchaseByUserId = async (req, res) => {
   try {
     const userId = req.query.userId;
-    const purchases = await Purchase.find({ user: userId });
+    const purchases = await Purchase.find({ user: userId }).populate({
+      path: "order",
+      populate: {
+        path: "products",
+        model: "Product",
+      },
+    });
     res.status(200).json({ purchases });
   } catch (error) {
     res.status(400).json({ msg: error.message });
